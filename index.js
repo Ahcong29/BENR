@@ -211,30 +211,7 @@ async function run() {
     });
 
 
-    /**
- * @swagger
- * /read:
- *   get:
- *     summary: Read user data
- *     description: Endpoint to retrieve user data.
- *     security:
- *       - BearerAuth: []
- *     responses:
- *       200:
- *         description: Successful data retrieval
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 // Define your response properties here
- *     securitySchemes:
- *       BearerAuth:
- *         type: apiKey
- *         in: header
- *         name: Authorization
- *         description: Use the format "Bearer {token}"
- */
+ 
 
     app.get('/read', authenticateToken, async (req, res) => {
       let data = req.user;

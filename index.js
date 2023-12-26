@@ -209,8 +209,9 @@ async function run() {
       let DataVis = req.body;
       res.send(await register(client, data, DataVis));
     });
-    
 
+
+    
     /**
  * @swagger
  * /read:

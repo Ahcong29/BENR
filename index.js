@@ -119,6 +119,40 @@ async function run() {
       res.send(await regAdmin(client, data));
     });
 
+    /**
+ * @swagger
+ * /login1:
+ *   post:
+ *     summary: User login
+ *     description: Endpoint to authenticate a user.
+ *     requestBody:
+ *       description: User credentials for authentication.
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *                 description: The username of the user.
+ *               password:
+ *                 type: string
+ *                 description: The password for the user account.
+ *               role:
+ *                 type: string
+ *                 description: The role of the user.
+ *     responses:
+ *       200:
+ *         description: Successful login
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 // Define your response properties here
+ */
+
     app.post('/login1', async (req, res) => {
       let data = req.body;
       res.send(await login(client, data));

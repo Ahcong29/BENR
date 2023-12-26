@@ -119,7 +119,7 @@ async function run() {
       res.send(await regAdmin(client, data));
     });
 
-    /**
+   /**
  * @swagger
  * /login1:
  *   post:

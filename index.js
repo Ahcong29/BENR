@@ -4,8 +4,34 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const app = express();
 const port = process.env.PORT || 3000;
+const swaggerUi = require('swagger-ui-express');
+const swaggerJsdoc = require('swagger-jsdoc');
+
+const options = {
+    definition: {
+        openapi: '3.0.0',
+        info: {
+            title: 'VMS API',
+            version: '1.0.0'
+        },
+        components: {  // Add 'components' section
+            securitySchemes: {  // Define 'securitySchemes'
+                bearerAuth: {  // Define 'bearerAuth'
+                    type: 'http',
+                    scheme: 'bearer',
+                    bearerFormat: 'JWT'
+                }
+            }
+        }
+    },
+    apis: ['./index.js'],
+};
+
+const swaggerSpec = swaggerJsdoc(options);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
+
 app.use(express.json());
 app.listen(port, () => {
       console.log(`Server listening at http://localhost:${port}`);

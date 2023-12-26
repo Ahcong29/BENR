@@ -211,7 +211,6 @@ async function run() {
     });
 
 
-    
     /**
  * @swagger
  * /read:
@@ -243,7 +242,6 @@ async function run() {
  *               properties:
  *                 // Define your response properties here
  */
-
 
     app.get('/read', authenticateToken, async (req, res) => {
       let data = req.user;

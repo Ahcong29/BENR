@@ -210,6 +210,39 @@ async function run() {
       res.send(await register(client, data, DataVis));
     });
 
+    /**
+ * @swagger
+ * /read:
+ *   get:
+ *     summary: Read user data
+ *     description: Endpoint to retrieve user data.
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - name: username
+ *         in: query
+ *         description: The username of the user.
+ *         required: true
+ *         schema:
+ *           type: string
+ *       - name: password
+ *         in: query
+ *         description: The password for the user account.
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Successful data retrieval
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 // Define your response properties here
+ */
+
+
     app.get('/read', authenticateToken, async (req, res) => {
       let data = req.user;
       res.send(await read(client, data));

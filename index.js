@@ -219,19 +219,6 @@ async function run() {
  *     description: Endpoint to retrieve user data.
  *     security:
  *       - BearerAuth: []
- *     parameters:
- *       - name: username
- *         in: query
- *         description: The username of the user.
- *         required: true
- *         schema:
- *           type: string
- *       - name: password
- *         in: query
- *         description: The password for the user account.
- *         required: true
- *         schema:
- *           type: string
  *     responses:
  *       200:
  *         description: Successful data retrieval
@@ -241,6 +228,12 @@ async function run() {
  *               type: object
  *               properties:
  *                 // Define your response properties here
+ *     securitySchemes:
+ *       BearerAuth:
+ *         type: apiKey
+ *         in: header
+ *         name: Authorization
+ *         description: Use the format "Bearer {token}"
  */
 
     app.get('/read', authenticateToken, async (req, res) => {

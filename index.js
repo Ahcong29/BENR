@@ -71,7 +71,51 @@ async function run() {
       res.send(await regAdmin(client, data));
     });
 
-   
+   /**
+ * @swagger
+ * tags:
+ *   name: Registration
+ *   description: API for user registration
+ */
+
+/**
+ * @swagger
+ * /register:
+ *   post:
+ *     summary: Register a user
+ *     tags: [Registration]
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *                 description: The username for the user
+ *               password:
+ *                 type: string
+ *                 description: The password for the user
+ *               name:
+ *                 type: string
+ *                 description: The name of the user
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 description: The email address of the user
+ *     responses:
+ *       '200':
+ *         description: Successful registration
+ *       '400':
+ *         description: Bad Request - Invalid input data
+ *       '401':
+ *         description: Unauthorized - Invalid or missing token
+ *       '500':
+ *         description: Internal Server Error
+ */
 
     app.post('/register', authenticateToken, async (req, res) => {
       let data = req.user;

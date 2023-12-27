@@ -63,30 +63,6 @@ async function run() {
     app.get('/', (req, res) => {
        res.send('Hello World!')
     });
-/**
- * @swagger
- * components:
- *   schemas:
- *     AdminRequest:
- *       type: object
- *       properties:
- *         username:
- *           type: string
- *         password:
- *           type: string
- *         name:
- *           type: string
- *         email:
- *           type: string
- *           format: email
- *     AdminResponse:
- *       type: object
- *       properties:
- *         status:
- *           type: string
- *         message:
- *           type: string
- */
 
 /**
  * @swagger

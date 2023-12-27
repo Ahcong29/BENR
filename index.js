@@ -64,8 +64,25 @@ async function run() {
        res.send('Hello World!')
     });
 
-   
-
+/**
+ * @swagger
+ * /regAdmin:
+ *   post:
+ *     summary: Register an Admin
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Admin'
+ *     responses:
+ *       '200':
+ *         description: Successful response
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiResponse'
+ */
     app.post('/regAdmin', async (req, res) => {
       let data = req.body;
       res.send(await regAdmin(client, data));

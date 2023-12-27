@@ -64,55 +64,7 @@ async function run() {
        res.send('Hello World!')
     });
 
-    /**
- * @swagger
- * /regAdmin:
- *   post:
- *     summary: Register an admin
- *     description: Endpoint to register an admin.
- *     requestBody:
- *       description: Admin data to be registered.
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               username:
- *                 type: string
- *                 description: The username of the admin.
- *               password:
- *                 type: string
- *                 description: The password for the admin account.
- *               name:
- *                 type: string
- *                 description: The name of the admin.
- *               icNumber:
- *                 type: string
- *                 description: The IC (Identification Card) number of the admin.
- *               company:
- *                 type: string
- *                 description: The company of the admin.
- *               vehicleNumber:
- *                 type: string
- *                 description: The vehicle number associated with the admin.
- *               email:
- *                 type: string
- *                 format: email
- *                 description: The email address of the admin.
- *               phoneNumber:
- *                 type: string
- *                 description: The phone number of the admin.
- *     responses:
- *       200:
- *         description: Successful operation
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 // Define your response properties here
- */
+   
 
     app.post('/regAdmin', async (req, res) => {
       let data = req.body;

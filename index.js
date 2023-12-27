@@ -236,18 +236,88 @@ async function run() {
       let DataVis=req.body;
       res.send(await updateVisitorInformation(client, data,DataVis));
     });
-
+/**
+ * @swagger
+ * /deleteVisitor:
+ *   delete:
+ *     summary: Delete Visitor
+ *     description: Deletes a visitor's information and associated records
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       '200':
+ *         description: Visitor deleted successfully
+ *       '401':
+ *         description: Unauthorized or Invalid token
+ *       '500':
+ *         description: Internal server error
+ *     tags:
+ *       - Visitor Management
+ */
     app.delete('/deleteVisitor', authenticateToken, async (req, res) => {
       let data = req.user;
       res.send(await deleteVisitor(client, data));
     });
-
+/** 
+ * @swagger
+ * /checkIn:
+ *   post:
+ *     summary: Check-in for Visitors
+ *     description: Allows visitors to check-in to a location
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               recordID:
+ *                 type: string
+ *               purpose:
+ *                 type: string
+ *     responses:
+ *       '200':
+ *         description: Visitor checked in successfully
+ *       '401':
+ *         description: Unauthorized or Invalid token
+ *       '403':
+ *         description: Only visitors can check-in
+ *       '404':
+ *         description: User not found or already checked in
+ *       '409':
+ *         description: RecordID already in use
+ *       '500':
+ *         description: Internal server error
+ *     tags:
+ *       - Check-in
+ */
     app.post('/checkIn', authenticateToken, async (req, res) => {
       let data = req.user;
       let DataVis = req.body;
       res.send(await checkIn(client, data, DataVis));
     });
-
+/**
+ * @swagger
+ * /checkOut:
+ *   patch:
+ *     summary: Check-out for Visitors
+ *     description: Allows visitors to check-out from a location
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       '200':
+ *         description: Visitor checked out successfully
+ *       '401':
+ *         description: Unauthorized or Invalid token
+ *       '404':
+ *         description: User not found or not checked in
+ *       '500':
+ *         description: Internal server error
+ *     tags:
+ *       - Check-out
+ */
     app.patch('/checkOut', authenticateToken, async (req, res) => {
       let data = req.user;
       res.send(await checkOut(client, data));

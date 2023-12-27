@@ -145,7 +145,31 @@ async function run() {
       let DataVis=req.body;
       res.send(await updateVisitorInformation(client, data,DataVis));
     });
+/**
+ * @swagger
+ * tags:
+ *   name: Visitor
+ *   description: API for visitor operations
+ */
 
+/**
+ * @swagger
+ * /deleteVisitor:
+ *   delete:
+ *     summary: Delete a visitor
+ *     description: Delete a visitor with the provided data.
+ *     tags:
+ *       - Visitor
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       '204':
+ *         description: No Content - Visitor deleted successfully
+ *       '401':
+ *         description: Unauthorized - Token is missing or invalid
+ *       '500':
+ *         description: Internal Server Error
+ */
     app.delete('/deleteVisitor', authenticateToken, async (req, res) => {
       let data = req.user;
       res.send(await deleteVisitor(client, data));

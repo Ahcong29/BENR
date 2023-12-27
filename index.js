@@ -192,6 +192,44 @@ async function run() {
       let data = req.user;
       res.send(await read(client, data));
     });
+/**
+ * @swagger
+ * /update:
+ *   patch:
+ *     summary: Update Visitor Information
+ *     description: Allows a visitor to update their information (phone, vehicle number, department, company)
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *               phone:
+ *                 type: string
+ *               vehicleNo:
+ *                 type: string
+ *               department:
+ *                 type: string
+ *               company:
+ *                 type: string
+ *     responses:
+ *       '200':
+ *         description: Visitor information updated successfully
+ *       '401':
+ *         description: Unauthorized or Invalid token
+ *       '403':
+ *         description: Only visitors can update their information
+ *       '500':
+ *         description: Internal server error
+ *     tags:
+ *       - Visitor Information
+ */
+    
 
     app.patch('/update', authenticateToken, async (req, res) => {
       let data = req.user;

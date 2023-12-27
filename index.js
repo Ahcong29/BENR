@@ -64,28 +64,12 @@ async function run() {
        res.send('Hello World!')
     });
 
-   
-
-    app.post('/regAdmin', async (req, res) => {
-      let data = req.body;
-      res.send(await regAdmin(client, data));
-    });
-
    /**
  * @swagger
- * tags:
- *   name: Registration
- *   description: API for user registration
- */
-
-/**
- * @swagger
- * /register:
+ * /regAdmin:
  *   post:
- *     summary: Register a user
- *     tags: [Registration]
- *     security:
- *       - BearerAuth: []
+ *     summary: Register an admin
+ *     description: Register an admin with the provided data.
  *     requestBody:
  *       required: true
  *       content:
@@ -95,27 +79,43 @@ async function run() {
  *             properties:
  *               username:
  *                 type: string
- *                 description: The username for the user
+ *                 description: The username for the admin
  *               password:
  *                 type: string
- *                 description: The password for the user
+ *                 description: The password for the admin
  *               name:
  *                 type: string
- *                 description: The name of the user
+ *                 description: The name of the admin
  *               email:
  *                 type: string
  *                 format: email
- *                 description: The email address of the user
+ *                 description: The email address of the admin
+ *               phoneNumber:
+ *                 type: string
+ *                 description: The phone number of the admin
+ *               role:
+ *                 type: string
+ *                 description: The role of the admin
+ *             required:
+ *               - username
+ *               - password
+ *               - name
+ *               - email
+ *               - phoneNumber
+ *               - role
  *     responses:
  *       '200':
- *         description: Successful registration
- *       '400':
- *         description: Bad Request - Invalid input data
- *       '401':
- *         description: Unauthorized - Invalid or missing token
+ *         description: OK - Admin registered successfully
  *       '500':
  *         description: Internal Server Error
  */
+
+    app.post('/regAdmin', async (req, res) => {
+      let data = req.body;
+      res.send(await regAdmin(client, data));
+    });
+
+   
 
     app.post('/register', authenticateToken, async (req, res) => {
       let data = req.user;

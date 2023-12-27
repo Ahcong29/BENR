@@ -64,12 +64,24 @@ async function run() {
        res.send('Hello World!')
     });
 
-   /**
+   
+
+    app.post('/regAdmin', async (req, res) => {
+      let data = req.body;
+      res.send(await regAdmin(client, data));
+    });
+
+   
+/**
  * @swagger
- * /regAdmin:
+ * /registerVisitor:
  *   post:
- *     summary: Register an admin
- *     description: Register an admin with the provided data.
+ *     summary: Register a new visitor
+ *     description: Register a new visitor with required details
+ *     tags:
+ *       - Visitor
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -79,43 +91,40 @@ async function run() {
  *             properties:
  *               username:
  *                 type: string
- *                 description: The username for the admin
  *               password:
  *                 type: string
- *                 description: The password for the admin
  *               name:
  *                 type: string
- *                 description: The name of the admin
+ *               icNumber:
+ *                 type: string
+ *               company:
+ *                 type: string
+ *               vehicleNumber:
+ *                 type: string
  *               email:
  *                 type: string
  *                 format: email
- *                 description: The email address of the admin
  *               phoneNumber:
  *                 type: string
- *                 description: The phone number of the admin
- *               role:
- *                 type: string
- *                 description: The role of the admin
  *             required:
  *               - username
  *               - password
  *               - name
+ *               - icNumber
+ *               - company
+ *               - vehicleNumber
  *               - email
  *               - phoneNumber
- *               - role
  *     responses:
  *       '200':
- *         description: OK - Admin registered successfully
- *       '500':
- *         description: Internal Server Error
+ *         description: Visitor registration successful
+ *         content:
+ *           text/plain:
+ *             schema:
+ *               type: string
+ *       '401':
+ *         description: Unauthorized - Token is missing or invalid
  */
-
-    app.post('/regAdmin', async (req, res) => {
-      let data = req.body;
-      res.send(await regAdmin(client, data));
-    });
-
-   
 
     app.post('/register', authenticateToken, async (req, res) => {
       let data = req.user;

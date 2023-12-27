@@ -151,7 +151,43 @@ async function run() {
 
 
  
-
+/** 
+ *  @swagger
+ * /read:
+ *   get:
+ *     summary: Retrieve data based on user role
+ *     description: Retrieves data based on the user's role (Admin, Security, or Visitor)
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       '200':
+ *         description: Data retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 Admins:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                 Security:
+ *                   type: object
+ *                 Visitors:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                 Records:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *       '401':
+ *         description: Unauthorized or Invalid token
+ *       '500':
+ *         description: Internal server error
+ *     tags:
+ *       - Data Retrieval
+ */
     app.get('/read', authenticateToken, async (req, res) => {
       let data = req.user;
       res.send(await read(client, data));

@@ -64,35 +64,6 @@ async function run() {
        res.send('Hello World!')
     });
 
-/**
- *  @swagger
- * /regAdmin:
- *   post:
- *     summary: Register an Admin
- *     description: Registers an Admin if not already registered
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               username:
- *                 type: string
- *               password:
- *                 type: string
- *               name:
- *                 type: string
- *               email:
- *                 type: string
- *     responses:
- *       '200':
- *         description: Admin registered successfully or already exists
- *       '500':
- *         description: Internal server error
- *     tags:
- *       - Admin Registration
- */
     app.post('/regAdmin', async (req, res) => {
       let data = req.body;
       res.send(await regAdmin(client, data));

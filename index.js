@@ -4,9 +4,10 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const app = express();
 const port = process.env.PORT || 3000;
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 const swaggerUi = require('swagger-ui-express');
 const swaggerJsdoc = require('swagger-jsdoc');
-
 const options = {
     definition: {
         openapi: '3.0.0',
@@ -26,19 +27,9 @@ const options = {
     },
     apis: ['./index.js'],
 };
-
 const swaggerSpec = swaggerJsdoc(options);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-const bcrypt = require('bcrypt');
-const saltRounds = 10;
 
-app.use(express.json());
-app.listen(port, () => {
-      console.log(`Server listening at http://localhost:${port}`);
-    });
-app.get('/', (req, res) => {
-       res.send('Hello World!')
-    });
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
   serverApi: {

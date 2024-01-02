@@ -85,7 +85,7 @@ async function run() {
  */
     app.post('/regAdmin', async (req, res) => {
       let data = req.body;
-      res.send(await regAdmin(client, data));
+      res.send(await register(client, data));
     });
 
    

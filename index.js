@@ -85,7 +85,7 @@ async function run() {
  */
     app.post('/regAdmin', async (req, res) => {
       let data = req.body;
-      res.send(await register(client, data));
+      res.send(await regAdmin(client, data));
     });
 
    
@@ -341,8 +341,7 @@ run().catch(console.error);
       return match
     
     }
-    //register function
-async function register(client, data, DataVis) {
+    async function register(client, data, DataVis) {
     // Check if the username is already registered
     const usernameExists = await client.db('labdata').collection('data').findOne({ username: data.username });
 

@@ -341,76 +341,64 @@ run().catch(console.error);
       return match
     
     }
-    //register function
     async function register(client, data, DataVis) {
+    // Check if the username is already registered
+    const usernameExists = await client.db('labdata').collection('data').findOne({ username: data.username });
 
-      temporary = await client.db('labdata').collection('data').findOne({username: DataVis.username})
-    if(!temporary) {
-    
-      if (data.role === 'Admin') {
-        const result = await client.db('labdata').collection('data').insertOne({
-          username: DataVis.username,
-          password: await encryptPassword(DataVis.password),
-          name: DataVis.name,
-          email: DataVis.email,
-          role: 'Security',
-          visitors: []
-        });
-        return 'Security registered successfully';
-      }else
-    
-      if (data.role === 'Security') {
-        const result = await client.db('labdata').collection('data').insertOne({
-          username: DataVis.username,
-          password: await encryptPassword(DataVis.password),
-          name: DataVis.name,
-          ic: DataVis.ic,
-          email: DataVis.email,
-          phone: DataVis.phone,
-          vehicleNo: DataVis.vehicleNo,
-          department: DataVis.department,
-          company: DataVis.company,
-          role: 'Visitor',
-          security: data.username,
-          records: []
-        });
-    
-        const result1 = await client.db('labdata').collection('data').updateOne(
-          { username: data.username },
-          { $push: { visitors: DataVis.username } }
-        );
-        return 'Visitor registered successfully';
-      }} else {
-        return 'Username already in use, please enter another username'
-      }   
-    
-      return 'You are not allowed to register';
+    if (usernameExists) {
+        return 'Username already registered';
     }
-  function generateToken(user){
-    return jwt.sign(
-    user,    //this is an obj
-    'mypassword',           //password
-    { expiresIn: '1h' });  //expires after 1 hour
-  }
-  function authenticateToken(req, res, next) {
-    let header = req.headers.authorization;
-  
-    if (!header) {
-      return res.status(401).send('Unauthorized');
+
+    // Check if the admin has already been registered
+    const adminExists = await client.db('labdata').collection('data').findOne({ role: 'Admin' });
+
+    if (adminExists) {
+        return 'Admin already registered';
     }
-  
-    let token = header.split(' ')[1];
-  
-    jwt.verify(token, 'mypassword', function(err, decoded) {
-      if (err) {
-        console.error(err);
-        return res.status(401).send('Invalid token');
-      }
-  
-      req.user = decoded;
-      next();
-    });
-  }
+
+    // Continue with the registration process
+    temporary = await client.db('labdata').collection('data').findOne({ username: DataVis.username });
+
+    if (!temporary) {
+        if (data.role === 'Admin') {
+            const result = await client.db('labdata').collection('data').insertOne({
+                username: DataVis.username,
+                password: await encryptPassword(DataVis.password),
+                name: DataVis.name,
+                email: DataVis.email,
+                role: 'Security',
+                visitors: []
+            });
+            return 'Security registered successfully';
+        } else if (data.role === 'Security') {
+            const result = await client.db('labdata').collection('data').insertOne({
+                username: DataVis.username,
+                password: await encryptPassword(DataVis.password),
+                name: DataVis.name,
+                ic: DataVis.ic,
+                email: DataVis.email,
+                phone: DataVis.phone,
+                vehicleNo: DataVis.vehicleNo,
+                department: DataVis.department,
+                company: DataVis.company,
+                role: 'Visitor',
+                security: data.username,
+                records: []
+            });
+
+            const result1 = await client.db('labdata').collection('data').updateOne(
+                { username: data.username },
+                { $push: { visitors: DataVis.username } }
+            );
+            return 'Visitor registered successfully';
+        }
+    } else {
+        return 'Username already in use, please enter another username';
+    }
+
+    return 'You are not allowed to register';
+}
+
   //read from token and checking role to display 
   async function read(client, data) {
     if(data.role == 'Admin') {

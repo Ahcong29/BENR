@@ -285,7 +285,7 @@ async function run() {
  *     summary: Issue a visitor pass
  *     description: Issue a new visitor pass with a valid token obtained from the loginSecurity endpoint
  *     tags:
- *       - Visitor
+ *       - Security
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -324,7 +324,7 @@ async function run() {
  *     summary: Retrieve visitor pass details
  *     description: Retrieve pass details for a visitor using the pass identifier
  *     tags:
- *       - Security
+ *       - Visitor
  *     security:
  *       - bearerAuth: []
  *     parameters:

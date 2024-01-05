@@ -91,7 +91,7 @@ async function run() {
    
 /**
  * @swagger
- * /registerVisitor:
+ * /register:
  *   post:
  *     summary: Register a new visitor
  *     description: Register a new visitor with required details

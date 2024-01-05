@@ -356,7 +356,7 @@ run().catch(console.error);
 function generateToken(userProfile){
   return jwt.sign(
   userProfile,    //this is an obj
-  'julpassword',           //password
+  'faizpass',           //password
   { expiresIn: '2h' });  //expires after 2 hour
 }
 

@@ -6,7 +6,7 @@ const bcrypt = require('bcrypt');
 const app = express();
 const port = process.env.PORT || 3000;
 const saltRounds = 10;
-const uri = "mongodb+srv://Ahcong29:Faiz29901@cluster0.vtiyfc2.mongodb.net/";
+const uri = "mongodb+srv://Ahcong29:Faiz29901@assignmentbenr3433.hfietam.mongodb.net/";
 
 const swaggerUi = require('swagger-ui-express');
 const swaggerJsdoc = require('swagger-jsdoc');
@@ -15,7 +15,7 @@ const options = {
     definition: {
         openapi: '3.0.0',
         info: {
-            title: 'Welcome to web app Secure Info',
+            title: 'Welcome to Achong server',
             version: '1.0.0'
         },
         components: {  // Add 'components' section

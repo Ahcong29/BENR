@@ -91,7 +91,7 @@ async function run() {
    
 /**
  * @swagger
- * /register:
+ * /registerVisitor:
  *   post:
  *     summary: Register a new visitor
  *     description: Register a new visitor with required details
@@ -143,7 +143,7 @@ async function run() {
  *         description: Unauthorized - Token is missing or invalid
  */
 
-    app.post('/register', authenticateToken, async (req, res) => {
+    app.post('/registerVisitor', authenticateToken, async (req, res) => {
       let data = req.user;
       let DataVis = req.body;
       res.send(await register(client, data, DataVis));

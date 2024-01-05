@@ -39,21 +39,28 @@ const client = new MongoClient(uri, {
   }
 });
 
-// Connect the client to the server (optional starting in v4.7)
+
 async function run() {
-    try {
-      // Connect the client to the server  (optional starting in v4.7)
-      await client.connect();
-      // Send a ping to confirm a successful connection
-      await client.db("admin").command({ ping: 1 });
-      console.log("Pinged your deployment. You successfully connected to MongoDB!");
+  try {
+    // Connect the client to the server  (optional starting in v4.7)
+    await client.connect();
+    // Send a ping to confirm a successful connection
+    await client.db("admin").command({ ping: 1 });
+    console.log("Pinged your deployment. You successfully connected to MongoDB!");
+
     app.use(express.json());
     app.listen(port, () => {
       console.log(`Server listening at http://localhost:${port}`);
     });
-    app.get('/', (req, res) => {
-       res.send('Hello World!')
-    });
+
+} catch (e) {
+    console.error(e);
+  } finally {
+    // Ensures that the client will close when you finish/error
+    // await client.close();
+  }
+}
+
 /**
  *  @swagger
  * /regAdmin:
@@ -84,8 +91,8 @@ async function run() {
  *       - Admin Registration
  */
     app.post('/regAdmin', async (req, res) => {
-      let data = req.body;
-      res.send(await regAdmin(client, data));
+        let data = req.body;
+        res.send(await regAdmin(client, data));
     });
 
    
@@ -233,8 +240,8 @@ async function run() {
 
     app.patch('/update', authenticateToken, async (req, res) => {
       let data = req.user;
-      let DataVis=req.body;
-      res.send(await updateVisitorInformation(client, data,DataVis));
+      let DataVis = req.body;
+      res.send(await updateVisitorInformation(client, data, DataVis));
     });
 /**
  * @swagger
@@ -318,18 +325,11 @@ async function run() {
  *     tags:
  *       - Check-out
  */
-    app.patch('/checkOut', authenticateToken, async (req, res) => {
+   app.patch('/checkOut', authenticateToken, async (req, res) => {
       let data = req.user;
       res.send(await checkOut(client, data));
     });
-} catch (e) {
-    console.error(e);
 
-  } finally {
-    // Ensures that the client will close when you finish/error
-    //await client.close();
-  }
-}
 run().catch(console.error);
 //encrypt Password
   async function encryptPassword(password) {
@@ -603,3 +603,5 @@ async function deleteVisitor(client, data) {
   );
   return "Delete Successful";
 }
+
+run().catch(console.error);

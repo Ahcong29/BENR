@@ -55,7 +55,7 @@ async function run() {
   });
 
   app.get('/', (req, res) => {
-    res.send('Server Group 21 Information Security');
+    res.send('Server Group 26 Information Security');
   });
 
   /**

@@ -349,16 +349,14 @@ async function run() {
     });
 
 
-  /**
+/**
  * @swagger
  * /checkIn:
  *   post:
  *     summary: Check in a visitor
- *     description: Check in a visitor with a valid token obtained from the loginVisitor endpoint
+ *     description: Check in a visitor without authentication
  *     tags:
  *       - Visitor
- *     security:
- *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -378,16 +376,13 @@ async function run() {
  *     responses:
  *       '200':
  *         description: Visitor checked in successfully
- *       '401':
- *         description: Unauthorized - Token is missing or invalid
  *       '404':
  *         description: Visitor not found or recordID already in use
  */
-  app.post('/checkIn', verifyToken, async (req, res) => {
-    let data = req.user;
+app.post('/checkIn', async (req, res) => {
     let mydata = req.body;
-    res.send(await checkIn(client, data, mydata));
-  });
+    res.send(await checkIn(client, null, mydata)); // Pass null or remove the data parameter if it's not used
+});
 
   /**
  * @swagger

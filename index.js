@@ -6,7 +6,7 @@ const bcrypt = require('bcrypt');
 const app = express();
 const port = process.env.PORT || 3000;
 const saltRounds = 10;
-const uri = "mongodb+srv://<Ahcong29>:<Faiz29901>@cluster0.oxo4y3q.mongodb.net/";
+const uri = "mongodb+srv://Ahcong29:<Faiz29901>@cluster0.oxo4y3q.mongodb.net/";
 
 const swaggerUi = require('swagger-ui-express');
 const swaggerJsdoc = require('swagger-jsdoc');
@@ -431,12 +431,42 @@ async function run() {
  *       '404':
  *         description: Visitor not found
  */
-app.post('/issuePass', verifyToken, async (req, res) => {
-    let data = req.user;
-    let passData = req.body;
-    res.send(await issuePass(client, data, passData));
-});
+    app.post('/issuePass', verifyToken, async (req, res) => {
+        let data = req.user;
+        let passData = req.body;
+        res.send(await issuePass(client, data, passData));
+    });
 
+/**
+ * @swagger
+ * /retrievePass/{passIdentifier}:
+ *   get:
+ *     summary: Retrieve visitor pass details
+ *     description: Retrieve pass details for a visitor using the pass identifier
+ *     tags:
+ *       - Security
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: passIdentifier
+ *         required: true
+ *         description: The unique pass identifier
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '200':
+ *         description: Visitor pass details retrieved successfully
+ *       '401':
+ *         description: Unauthorized - Token is missing or invalid
+ *       '404':
+ *         description: Pass not found or unauthorized to retrieve
+ */
+    app.get('/retrievePass/:passIdentifier', verifyToken, async (req, res) => {
+        let data = req.user;
+        let passIdentifier = req.params.passIdentifier;
+        res.send(await retrievePass(client, data, passIdentifier));
+    });
 
   /**
  * @swagger
@@ -772,7 +802,32 @@ async function issuePass(client, data, passData) {
     return `Visitor pass issued successfully with pass identifier: ${passIdentifier}`;
 }
 
-
+// Function to retrieve pass details
+async function retrievePass(client, data, passIdentifier) {
+    const passesCollection = client.db('assigment').collection('Passes');
+    const securityCollection = client.db('assigment').collection('Security');
+  
+    // Check if the security user has the authority to retrieve pass details
+    if (data.role !== 'Security') {
+      return 'You do not have the authority to retrieve pass details.';
+    }
+  
+    // Find the pass record using the pass identifier
+    const passRecord = await passesCollection.findOne({ passIdentifier: passIdentifier });
+  
+    if (!passRecord) {
+      return 'Pass not found or unauthorized to retrieve';
+    }
+  
+    // You can customize the response format based on your needs
+    return {
+      passIdentifier: passRecord.passIdentifier,
+      visitorUsername: passRecord.visitorUsername,
+      passDetails: passRecord.passDetails,
+      issuedBy: passRecord.issuedBy,
+      issueTime: passRecord.issueTime
+    };
+}
 
 //Function to read data
 async function read(client, data) {
@@ -808,6 +863,20 @@ async function read(client, data) {
     return { Visitor, Records };
   }
 }
+
+function generatePassIdentifier() {
+    // Implement your logic to generate a unique identifier
+    // This can be a combination of timestamp, random numbers, or any other strategy that ensures uniqueness
+  
+    const timestamp = new Date().getTime(); // Get current timestamp
+    const randomString = Math.random().toString(36).substring(7); // Generate a random string
+  
+    // Combine timestamp and random string to create a unique identifier
+    const passIdentifier = `${timestamp}_${randomString}`;
+  
+    return passIdentifier;
+}
+  
 
 
 //Function to update data

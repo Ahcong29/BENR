@@ -769,7 +769,7 @@ function verifyToken(req, res, next) {
 
   let token = header.split(' ')[1];
 
-  jwt.verify(token, 'julpassword', function(err, decoded) {
+  jwt.verify(token, 'faizpass', function(err, decoded) {
     if (err) {
       console.error(err);
       return res.status(401).send('Invalid token');

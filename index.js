@@ -6,7 +6,7 @@ const bcrypt = require('bcrypt');
 const app = express();
 const port = process.env.PORT || 3000;
 const saltRounds = 10;
-const uri = "mongodb+srv://Ahcong29:<Faiz29901>@cluster0.oxo4y3q.mongodb.net/";
+const uri = "mongodb+srv://Ahcong29:Faiz29901@cluster0.vtiyfc2.mongodb.net/";
 
 const swaggerUi = require('swagger-ui-express');
 const swaggerJsdoc = require('swagger-jsdoc');

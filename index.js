@@ -480,48 +480,41 @@ async function register(client, data, mydata) {
   }
 }
 
-// Function to issue a pass
 async function issuePass(client, data, passData) {
-    const usersCollection = client.db('assigment').collection('Users');
-    const securityCollection = client.db('assigment').collection('Security');
-  
-    // Check if the security user has the authority to issue passes
-    if (data.role !== 'Security') {
-      return 'You do not have the authority to issue passes.';
-    }
-  
-    // Find the visitor for whom the pass is issued
-    const visitor = await usersCollection.findOne({ username: passData.visitorUsername, role: 'Visitor' });
-  
-    if (!visitor) {
-      return 'Visitor not found';
-    }
-  
-    // Generate a unique pass identifier (you can use a library or a combination of data)
-    const passIdentifier = generatePassIdentifier();
-  
-    // Store the pass details in the database or any other desired storage
-    // You can create a new Passes collection for this purpose
-    // For simplicity, let's assume a Passes collection with a structure like { passIdentifier, visitorUsername, passDetails }
-    const passRecord = {
-      passIdentifier: passIdentifier,
-      visitorUsername: passData.visitorUsername,
-      passDetails: passData.passDetails || '',
-      issuedBy: data.username, // Security user who issued the pass
-      issueTime: new Date()
-    };
-  
-    // Insert the pass record into the Passes collection
-    await client.db('assigment').collection('Passes').insertOne(passRecord);
-  
-    // Update the visitor's information (you might want to store pass details in the visitor document)
-    await usersCollection.updateOne(
-      { username: passData.visitorUsername },
-      { $set: { passIdentifier: passIdentifier } }
-    );
-  
-    return `Visitor pass issued successfully with pass identifier: ${passIdentifier}`;
+  const recordsCollection = client.db('assigment').collection('Records'); // New collection for records
+
+  // Check if the security user has the authority to issue passes
+  if (data.role !== 'Security') {
+    return 'You do not have the authority to issue passes.';
+  }
+
+  // Generate a unique pass identifier (you can use a library or a combination of data)
+  const passIdentifier = generatePassIdentifier();
+
+  // Store the pass details in the Passes collection
+  const passRecord = {
+    passIdentifier: passIdentifier,
+    visitorUsername: passData.visitorUsername,
+    passDetails: passData.passDetails || '',
+    issuedBy: data.username, // Security user who issued the pass
+    issueTime: new Date(),
+  };
+
+  await client.db('assigment').collection('Passes').insertOne(passRecord);
+
+  // Create a new record in the "records" collection
+  const newRecord = {
+    visitorUsername: passData.visitorUsername,
+    newname: passData.newname,
+    passDetail: passData.passDetail,
+    // Add any other fields you want to store in the "records" collection
+  };
+
+  await recordsCollection.insertOne(newRecord);
+
+  return `Visitor pass issued successfully with pass identifier: ${passIdentifier}`;
 }
+
 
 function generatePassIdentifier() {
   // Implement your logic to generate a unique identifier

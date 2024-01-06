@@ -563,22 +563,17 @@ function generatePassIdentifier() {
 // Function to retrieve pass details
 async function retrievePass(client, data, passIdentifier) {
     const passesCollection = client.db('assigment').collection('Passes');
-    const securityCollection = client.db('assigment').collection('Security');
-  
-    // Check if the user has the authority to retrieve pass details
-    if (data.role !== 'Security' && data.role !== 'Admin') {
-      return 'You do not have the authority to retrieve pass details.';
-    }
   
     // Find the pass record using the pass identifier
     const passRecord = await passesCollection.findOne({ passIdentifier: passIdentifier });
   
     if (!passRecord) {
-      return 'Pass not found or unauthorized to retrieve';
+      return 'Pass not found';
     }
 
     if (data.role === 'Admin') {
       // If the request is from an admin, include the security user's phone number
+      const securityCollection = client.db('assigment').collection('Security');
       const securityUser = await securityCollection.findOne({ username: passRecord.issuedBy });
       
       if (!securityUser) {
@@ -608,6 +603,7 @@ async function retrievePass(client, data, passIdentifier) {
       };
     }
 }
+
 
 
 //Function to read data

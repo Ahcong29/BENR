@@ -628,7 +628,7 @@ async function issuePass(client, data, passData) {
   const recordsCollection = client.db('assigment').collection('Records'); // New collection for records
 
   // Check if the security user has the authority to issue passes
-  if (data.role !== 'Security') {
+  if (data.role !== 'Host') {
     return 'You do not have the authority to issue passes.';
   }
 

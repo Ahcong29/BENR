@@ -437,6 +437,7 @@ app.post('/issuePass', verifyHostToken, async (req, res) => {
     res.send(await issuePass(client, data, passData));
 });
 
+
 /**
  * @swagger
  * /retrievePass/{passIdentifier}:

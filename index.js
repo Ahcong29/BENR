@@ -324,7 +324,7 @@ async function run() {
  *     summary: Retrieve visitor pass details
  *     description: Retrieve pass details for a visitor using the pass identifier
  *     tags:
- *       - Visitor
+ *       - Host
  *     security:
  *       - bearerAuth: []
  *     parameters:

@@ -402,6 +402,41 @@ app.post('/registerHost', verifyToken, async (req, res) => {
     res.send(await registerHost(client, data, hostData));
 });
 
+    /**
+ * @swagger
+ * /loginHost:
+ *   post:
+ *     summary: Login as host
+ *     description: Authenticate and log in as host with username and password, and receive a token
+ *     tags:
+ *       - Host
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *                 description: The username of the host
+ *               password:
+ *                 type: string
+ *                 description: The password of the host
+ *             required:
+ *               - username
+ *               - password
+ *     responses:
+ *       '200':
+ *         description: Host login successful, provides a token
+ *       '401':
+ *         description: Unauthorized - Invalid credentials
+ */
+app.post('/loginHost', async (req, res) => {
+  let data = req.body;
+  res.send(await loginHost(client, data));
+});
+
 /**
  * @swagger
  * /retrievePass/{passIdentifier}:
@@ -858,6 +893,30 @@ async function deleteUser(client, data) {
   );
 
   return "Delete Successful\nBut the records are still in the database";
+}
+
+// Function to log in host and provide a token
+async function loginHost(client, data) {
+  const hostCollection = client.db("assigment").collection("Host");
+
+  // Find the host user
+  const host = await hostCollection.findOne({ username: data.username });
+
+  if (host) {
+    // Compare the provided password with the stored password
+    const isPasswordMatch = await decryptPassword(data.password, host.password);
+
+    if (isPasswordMatch) {
+      console.clear(); // Clear the console
+      const token = generateToken(host);
+      console.log(output('Host'));
+      return "\nToken for " + host.name + ": " + token;
+    } else {
+      return "Wrong password";
+    }
+  } else {
+    return "Host not found";
+  }
 }
 
 // Function to read host data

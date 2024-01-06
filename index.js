@@ -316,7 +316,7 @@ app.delete('/deleteSecurity/:username', verifyToken, async (req, res) => {
  *     summary: Issue a visitor pass
  *     description: Issue a new visitor pass with a valid token obtained from the loginSecurity endpoint
  *     tags:
- *       - Security
+ *       - Host
  *     security:
  *       - bearerAuth: []
  *     requestBody:

@@ -565,7 +565,7 @@ async function retrievePass(client, data, passIdentifier) {
     const passesCollection = client.db('assigment').collection('Passes');
     const securityCollection = client.db('assigment').collection('Security');
   
-    // Check if the security user has the authority to retrieve pass details
+    // Check if the user has the authority to retrieve pass details
     if (data.role !== 'Security' && data.role !== 'Admin') {
       return 'You do not have the authority to retrieve pass details.';
     }
@@ -594,8 +594,11 @@ async function retrievePass(client, data, passIdentifier) {
         issueTime: passRecord.issueTime,
         securityPhoneNumber: securityUser.phoneNumber,
       };
+    } else if (data.role === 'Security' && passRecord.issuedBy !== data.username) {
+      // Security users can only retrieve their own pass details
+      return 'You are not authorized to retrieve pass details for this pass.';
     } else {
-      // For security users, only include basic pass details
+      // For other security users and admin, include basic pass details
       return {
         passIdentifier: passRecord.passIdentifier,
         visitorUsername: passRecord.visitorUsername,
@@ -605,6 +608,7 @@ async function retrievePass(client, data, passIdentifier) {
       };
     }
 }
+
 
 //Function to read data
 async function read(client, data) {

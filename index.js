@@ -378,6 +378,7 @@ app.delete('/deleteSecurity/:username', verifyToken, async (req, res) => {
         let passIdentifier = req.params.passIdentifier;
         res.send(await retrievePass(client, data, passIdentifier));
     });
+
   
 }
 

@@ -347,6 +347,60 @@ app.delete('/deleteSecurity/:username', verifyToken, async (req, res) => {
         let passData = req.body;
         res.send(await issuePass(client, data, passData));
     });
+    
+    /**
+ * @swagger
+ * /registerHost:
+ *   post:
+ *     summary: Register a new host
+ *     description: Register a new host with username, password, name, email, and phoneNumber
+ *     tags:
+ *       - Host
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *                 description: The username of the host
+ *               password:
+ *                 type: string
+ *                 description: The password of the host
+ *               name:
+ *                 type: string
+ *                 description: The name of the host
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 description: The email of the host
+ *               phoneNumber:
+ *                 type: string
+ *                 description: The phone number of the host
+ *             required:
+ *               - username
+ *               - password
+ *               - name
+ *               - email
+ *               - phoneNumber
+ *     responses:
+ *       '200':
+ *         description: Host registered successfully
+ *       '401':
+ *         description: Unauthorized - Token is missing or invalid
+ *       '400':
+ *         description: Username already in use, please enter another username
+ */
+
+app.post('/registerHost', verifyToken, async (req, res) => {
+    let data = req.user;
+    let hostData = req.body;
+    res.send(await registerHost(client, data, hostData));
+});
 
 /**
  * @swagger
@@ -559,6 +613,29 @@ function generatePassIdentifier() {
   const passIdentifier = `${timestamp}_${randomString}`;
 
   return passIdentifier;
+}
+
+// Function to register a new host
+async function registerHost(client, data, hostData) {
+    const hostCollection = client.db("assigment").collection("Host");
+
+    // Check if the username is already in use
+    const existingHost = await hostCollection.findOne({ username: hostData.username });
+
+    if (existingHost) {
+        return "Username already in use, please enter another username";
+    }
+
+    // Insert the new host document
+    const result = await hostCollection.insertOne({
+        username: hostData.username,
+        password: await encryptPassword(hostData.password),
+        name: hostData.name,
+        email: hostData.email,
+        phoneNumber: hostData.phoneNumber,
+    });
+
+    return "Host registered successfully";
 }
 
 // Function to retrieve pass details

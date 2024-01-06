@@ -398,12 +398,12 @@ app.post('/loginHost', async (req, res) => {
   res.send(await loginHost(client, data));
 });
 
-     /**
+/**
  * @swagger
  * /issuePass:
  *   post:
  *     summary: Issue a visitor pass
- *     description: Issue a new visitor pass with a valid token obtained from the loginSecurity endpoint
+ *     description: Issue a new visitor pass with a valid token obtained from the loginHost endpoint
  *     tags:
  *       - Host
  *     security:
@@ -431,11 +431,11 @@ app.post('/loginHost', async (req, res) => {
  *       '404':
  *         description: Visitor not found
  */
-    app.post('/issuePass', verifyToken, async (req, res) => {
-        let data = req.user;
-        let passData = req.body;
-        res.send(await issuePass(client, data, passData));
-    });
+app.post('/issuePass', verifyHostToken, async (req, res) => {
+    let data = req.user;
+    let passData = req.body;
+    res.send(await issuePass(client, data, passData));
+});
 
 /**
  * @swagger
@@ -919,6 +919,34 @@ async function loginHost(client, data) {
   }
 }
 
+// Function to issue a visitor pass
+async function issuePass(client, data, passData) {
+    const recordsCollection = client.db('assigment').collection('Records'); // New collection for records
+
+    // Generate a unique pass identifier
+    const passIdentifier = generatePassIdentifier();
+
+    // Store the pass details in the Passes collection
+    const passRecord = {
+        passIdentifier: passIdentifier,
+        visitorUsername: passData.visitorUsername,
+        passDetails: passData.passDetails || '',
+        issuedBy: data.username, // Host user who issued the pass
+        issueTime: new Date(),
+    };
+
+    await client.db('assigment').collection('Passes').insertOne(passRecord);
+
+    // Create a new record in the "records" collection (you can customize this part)
+    const newRecord = {
+        visitorUsername: passData.visitorUsername,
+        // Add any other fields you want to store in the "records" collection
+    };
+
+    await recordsCollection.insertOne(newRecord);
+
+    return `Visitor pass issued successfully with pass identifier: ${passIdentifier}`;
+}
 // Function to read host data
 async function readHost(client, data) {
   if (data.role !== 'Admin') {

@@ -895,6 +895,28 @@ async function deleteUser(client, data) {
   return "Delete Successful\nBut the records are still in the database";
 }
 
+// Function to verify the loginHost token
+async function verifyHostToken(req, res, next) {
+    const token = req.headers['authorization'];
+
+    if (!token) {
+        return res.status(401).json({ error: 'Unauthorized - Token is missing' });
+    }
+
+    try {
+        const decoded = await verifyTokenAsync(token);
+        req.user = decoded;
+
+        if (decoded.role !== 'Host') {
+            return res.status(401).json({ error: 'Unauthorized - User is not a Host' });
+        }
+
+        next();
+    } catch (error) {
+        return res.status(401).json({ error: 'Unauthorized - Invalid token' });
+    }
+}
+
 // Function to log in host and provide a token
 async function loginHost(client, data) {
   const hostCollection = client.db("assigment").collection("Host");

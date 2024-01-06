@@ -141,37 +141,6 @@ async function run() {
     res.send(await login(client, data));
   });
     
-/**
- * @swagger
- * /deleteSecurity/{username}:
- *   delete:
- *     summary: Delete a security user by username
- *     description: Delete a security user by username with a valid token obtained from the readAdmin endpoint
- *     tags:
- *       - Admin
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: username
- *         required: true
- *         description: The username of the security user to be deleted
- *         schema:
- *           type: string
- *     responses:
- *       '200':
- *         description: Security user deleted successfully
- *       '401':
- *         description: Unauthorized - Token is missing or invalid
- *       '404':
- *         description: Security user not found
- */
-app.delete('/deleteSecurity/:username', verifyToken, async (req, res) => {
-    let data = req.user;
-    let usernameToDelete = req.params.username;
-    res.send(await deleteSecurityUser(client, data, usernameToDelete));
-});
-    
   /**
  * @swagger
  * /loginSecurity:
@@ -284,6 +253,37 @@ app.delete('/deleteSecurity/:username', verifyToken, async (req, res) => {
     let data = req.user;
     res.send(await read(client, data));
   });
+
+    /**
+ * @swagger
+ * /deleteSecurity/{username}:
+ *   delete:
+ *     summary: Delete a security user by username
+ *     description: Delete a security user by username with a valid token obtained from the readAdmin endpoint
+ *     tags:
+ *       - Admin
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: username
+ *         required: true
+ *         description: The username of the security user to be deleted
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '200':
+ *         description: Security user deleted successfully
+ *       '401':
+ *         description: Unauthorized - Token is missing or invalid
+ *       '404':
+ *         description: Security user not found
+ */
+app.delete('/deleteSecurity/:username', verifyToken, async (req, res) => {
+    let data = req.user;
+    let usernameToDelete = req.params.username;
+    res.send(await deleteSecurityUser(client, data, usernameToDelete));
+});
 
   /**
  * @swagger

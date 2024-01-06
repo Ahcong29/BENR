@@ -942,14 +942,9 @@ async function loginHost(client, data) {
   }
 }
 
-// Modified issuePass function
+// Function to issue a visitor pass with Host authentication
 async function issuePass(client, data, passData) {
     const recordsCollection = client.db('assigment').collection('Records'); // New collection for records
-
-    // Check if the host user has the authority to issue passes
-    if (data.role !== 'Security') {
-        return 'You do not have the authority to issue passes.';
-    }
 
     // Generate a unique pass identifier
     const passIdentifier = generatePassIdentifier();

@@ -308,45 +308,6 @@ app.delete('/deleteSecurity/:username', verifyToken, async (req, res) => {
     res.send(await read(client, data));
   });
 
-
-  /**
- * @swagger
- * /issuePass:
- *   post:
- *     summary: Issue a visitor pass
- *     description: Issue a new visitor pass with a valid token obtained from the loginSecurity endpoint
- *     tags:
- *       - Host
- *     security:
- *       - bearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               visitorUsername:
- *                 type: string
- *                 description: The username of the visitor for whom the pass is issued
- *               passDetails:
- *                 type: string
- *                 description: Additional details for the pass (optional)
- *             required:
- *               - visitorUsername
- *     responses:
- *       '200':
- *         description: Visitor pass issued successfully, returns a unique pass identifier
- *       '401':
- *         description: Unauthorized - Token is missing or invalid
- *       '404':
- *         description: Visitor not found
- */
-    app.post('/issuePass', verifyToken, async (req, res) => {
-        let data = req.user;
-        let passData = req.body;
-        res.send(await issuePass(client, data, passData));
-    });
     
     /**
  * @swagger
@@ -436,6 +397,45 @@ app.post('/loginHost', async (req, res) => {
   let data = req.body;
   res.send(await loginHost(client, data));
 });
+
+     /**
+ * @swagger
+ * /issuePass:
+ *   post:
+ *     summary: Issue a visitor pass
+ *     description: Issue a new visitor pass with a valid token obtained from the loginSecurity endpoint
+ *     tags:
+ *       - Host
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               visitorUsername:
+ *                 type: string
+ *                 description: The username of the visitor for whom the pass is issued
+ *               passDetails:
+ *                 type: string
+ *                 description: Additional details for the pass (optional)
+ *             required:
+ *               - visitorUsername
+ *     responses:
+ *       '200':
+ *         description: Visitor pass issued successfully, returns a unique pass identifier
+ *       '401':
+ *         description: Unauthorized - Token is missing or invalid
+ *       '404':
+ *         description: Visitor not found
+ */
+    app.post('/issuePass', verifyToken, async (req, res) => {
+        let data = req.user;
+        let passData = req.body;
+        res.send(await issuePass(client, data, passData));
+    });
 
 /**
  * @swagger

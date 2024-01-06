@@ -522,6 +522,7 @@ async function issuePass(client, data, passData) {
   
     return `Visitor pass issued successfully with pass identifier: ${passIdentifier}`;
 }
+
 function generatePassIdentifier() {
   // Implement your logic to generate a unique identifier
   // This can be a combination of timestamp, random numbers, or any other strategy that ensures uniqueness

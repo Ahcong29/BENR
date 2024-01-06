@@ -432,6 +432,29 @@ app.post('/registerHost', verifyToken, async (req, res) => {
         let passIdentifier = req.params.passIdentifier;
         res.send(await retrievePass(client, data, passIdentifier));
     });
+    
+    /**
+ * @swagger
+ * /readHost:
+ *   get:
+ *     summary: Read host data
+ *     description: Retrieve host data with a valid token obtained from the loginAdmin endpoint
+ *     tags:
+ *       - Host
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       '200':
+ *         description: Host data retrieved successfully
+ *       '401':
+ *         description: Unauthorized - Token is missing or invalid
+ *       '404':
+ *         description: Host not found
+ */
+app.get('/readHost', verifyToken, async (req, res) => {
+  let data = req.user;
+  res.send(await readHost(client, data));
+});
 
   
 }
@@ -835,6 +858,22 @@ async function deleteUser(client, data) {
   );
 
   return "Delete Successful\nBut the records are still in the database";
+}
+
+// Function to read host data
+async function readHost(client, data) {
+  if (data.role !== 'Admin') {
+    return 'You do not have the authority to read host data.';
+  }
+
+  const hostCollection = client.db('assigment').collection('Host');
+  const hosts = await hostCollection.find().toArray();
+
+  if (hosts.length === 0) {
+    return 'No hosts found';
+  }
+
+  return hosts;
 }
 
 

@@ -522,6 +522,18 @@ async function issuePass(client, data, passData) {
   
     return `Visitor pass issued successfully with pass identifier: ${passIdentifier}`;
 }
+function generatePassIdentifier() {
+  // Implement your logic to generate a unique identifier
+  // This can be a combination of timestamp, random numbers, or any other strategy that ensures uniqueness
+
+  const timestamp = new Date().getTime(); // Get current timestamp
+  const randomString = Math.random().toString(36).substring(7); // Generate a random string
+
+  // Combine timestamp and random string to create a unique identifier
+  const passIdentifier = `${timestamp}_${randomString}`;
+
+  return passIdentifier;
+}
 
 // Function to retrieve pass details
 async function retrievePass(client, data, passIdentifier) {

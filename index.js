@@ -140,7 +140,38 @@ async function run() {
     let data = req.body;
     res.send(await login(client, data));
   });
-
+    
+/**
+ * @swagger
+ * /deleteSecurity/{username}:
+ *   delete:
+ *     summary: Delete a security user by username
+ *     description: Delete a security user by username with a valid token obtained from the readAdmin endpoint
+ *     tags:
+ *       - Admin
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: username
+ *         required: true
+ *         description: The username of the security user to be deleted
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '200':
+ *         description: Security user deleted successfully
+ *       '401':
+ *         description: Unauthorized - Token is missing or invalid
+ *       '404':
+ *         description: Security user not found
+ */
+app.delete('/deleteSecurity/:username', verifyToken, async (req, res) => {
+    let data = req.user;
+    let usernameToDelete = req.params.username;
+    res.send(await deleteSecurityUser(client, data, usernameToDelete));
+});
+    
   /**
  * @swagger
  * /loginSecurity:
@@ -624,6 +655,25 @@ async function update(client, data, mydata) {
   }
 
   return "Update Successfully";
+}
+
+// Function to delete a security user by username
+async function deleteSecurityUser(client, data, usernameToDelete) {
+    const securityCollection = client.db("assigment").collection("Security");
+
+    // Check if the user making the request is an admin
+    if (data.role !== 'Admin') {
+        return 'You do not have the authority to delete security users.';
+    }
+
+    // Delete security user document
+    const deleteResult = await securityCollection.deleteOne({ username: usernameToDelete });
+
+    if (deleteResult.deletedCount === 0) {
+        return 'Security user not found';
+    }
+
+    return 'Security user deleted successfully';
 }
 
 

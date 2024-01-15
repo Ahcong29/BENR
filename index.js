@@ -693,6 +693,7 @@ async function issuePass(client, data, passData) {
     passDetails: passData.passDetails || '',
     issuedBy: data.username, // Security user who issued the pass
     issueTime: new Date(),
+    hostNumber: data.phoneNumber
   };
 
   await client.db('assigment').collection('Passes').insertOne(passRecord);
@@ -868,39 +869,39 @@ async function update(client, data, mydata) {
 }
 
 // Function to retrieve pass details along with security phone number
-async function retrievePass(client, data, passIdentifier) {
-  const passesCollection = client.db('assigment').collection('Passes');
-  const securityCollection = client.db('assigment').collection('Security');
+// async function retrievePass(client, data, passIdentifier) {
+//   const passesCollection = client.db('assigment').collection('Passes');
+//   const securityCollection = client.db('assigment').collection('Security');
 
-  // Check if the security user has the authority to retrieve pass details
-  if (data.role !== 'Security') {
-    return 'You do not have the authority to retrieve pass details.';
-  }
+//   // Check if the security user has the authority to retrieve pass details
+//   if (data.role !== 'Security') {
+//     return 'You do not have the authority to retrieve pass details.';
+//   }
 
-  // Find the pass record using the pass identifier
-  const passRecord = await passesCollection.findOne({ passIdentifier: passIdentifier });
+//   // Find the pass record using the pass identifier
+//   const passRecord = await passesCollection.findOne({ passIdentifier: passIdentifier });
 
-  if (!passRecord) {
-    return 'Pass not found or unauthorized to retrieve';
-  }
+//   if (!passRecord) {
+//     return 'Pass not found or unauthorized to retrieve';
+//   }
 
-  // Find the security user information using the "issuedBy" field from the pass record
-  const securityUser = await securityCollection.findOne({ username: passRecord.issuedBy });
+//   // Find the security user information using the "issuedBy" field from the pass record
+//   const securityUser = await securityCollection.findOne({ username: passRecord.issuedBy });
 
-  if (!securityUser) {
-    return 'Security user not found';
-  }
+//   if (!securityUser) {
+//     return 'Security user not found';
+//   }
 
-  // You can customize the response format based on your needs
-  return {
-    passIdentifier: passRecord.passIdentifier,
-    visitorUsername: passRecord.visitorUsername,
-    passDetails: passRecord.passDetails,
-    issuedBy: passRecord.issuedBy,
-    issueTime: passRecord.issueTime,
-    securityPhoneNumber: securityUser.phoneNumber,
-  };
-}
+//   // You can customize the response format based on your needs
+//   return {
+//     passIdentifier: passRecord.passIdentifier,
+//     visitorUsername: passRecord.visitorUsername,
+//     passDetails: passRecord.passDetails,
+//     issuedBy: passRecord.issuedBy,
+//     issueTime: passRecord.issueTime,
+//     securityPhoneNumber: securityUser.phoneNumber,
+//   };
+// }
 
 
 // Function to delete a security user by username
@@ -996,20 +997,20 @@ async function loginHost(client, data) {
 }
 
 // Function to issue a visitor pass with Host authentication
-async function issuePass(client, data, passData) {
-    const recordsCollection = client.db('assigment').collection('Records'); // New collection for records
+// async function issuePass(client, data, passData) {
+//     const recordsCollection = client.db('assigment').collection('Records'); // New collection for records
 
-    // Generate a unique pass identifier
-    const passIdentifier = generatePassIdentifier();
+//     // Generate a unique pass identifier
+//     const passIdentifier = generatePassIdentifier();
 
-    // Store the pass details in the Passes collection
-    const passRecord = {
-        passIdentifier: passIdentifier,
-        visitorUsername: passData.visitorUsername,
-        passDetails: passData.passDetails || '',
-        issuedBy: data.username, // Host user who issued the pass
-        issueTime: new Date(),
-    };
+//     // Store the pass details in the Passes collection
+//     const passRecord = {
+//         passIdentifier: passIdentifier,
+//         visitorUsername: passData.visitorUsername,
+//         passDetails: passData.passDetails || '',
+//         issuedBy: data.username, // Host user who issued the pass
+//         issueTime: new Date(),
+//     };
 
     await client.db('assigment').collection('Passes').insertOne(passRecord);
 

@@ -545,6 +545,160 @@ app.get('/readHost', verifyToken, async (req, res) => {
   
 }
 
+
+//Additional API
+/**
+* @swagger
+* /Admin/manage-roles/{userId}:
+*   put:
+*     summary: Update user role by authenticated administrator
+*     description: Update user role based on the provided user ID for an authenticated administrator
+*     tags:
+*       - Admin
+*     security:
+*       - bearerAuth: []  # Assuming you're using bearer token authentication
+*     parameters:
+*       - in: path
+*         name: userId
+*         description: ID of the user to update role
+*         required: true
+*         schema:
+*           type: string
+*       - in: body
+*         name: userRole
+*         description: User role information for update
+*         required: true
+*         schema:
+*           type: object
+*           properties:
+*             role:
+*               type: string
+*               description: New role to be assigned to the user
+*     responses:
+*       '200':
+*         description: Account role updated successfully
+*         content:
+*           application/json:
+*             schema:
+*               type: object
+*               properties:
+*                 message:
+*                   type: string
+*                   description: Success message
+*                 updatedUser:
+*                   type: object
+*                   description: Updated user information (excluding sensitive fields)
+*       '401':  # Unauthorized (more specific than 403)
+*         description: Unauthorized access
+*         content:
+*           application/json:
+*             schema:
+*               type: object
+*               properties:
+*                 error:
+*                   type: string
+*                   description: Error message for unauthorized access
+*       '403':  # Forbidden (if applicable)
+*         description: Forbidden access
+*         content:
+*           application/json:
+*             schema:
+*               type: object
+*               properties:
+*                 error:
+*                   type: string
+*                   description: Error message for forbidden access
+*       '404':
+*         description: User not found
+*         content:
+*           application/json:
+*             schema:
+*               type: object
+*               properties:
+*                 error:
+*                   type: string
+*                   description: Error message for user not found
+*       '500':
+*         description: Failed to update account role
+*         content:
+*           application/json:
+*             schema:
+*               type: object
+*               properties:
+*                 error:
+*                   type: string
+*                   description: Error message for failed update
+*     consumes:
+*       - application/json
+*     produces:
+*       - application/json
+*/
+
+app.put('/Admin/manage-roles/:userId', async function(req, res) {
+  try {
+    await client.connect();
+
+    const { userId } = req.params;
+    const { role } = req.body;
+    const token = req.headers.authorization.split(' ')[1];
+
+    const decodedToken = jwt.verify(token, 'your-private-key');
+
+    if (decodedToken.role !== 'Admin') {
+      return res.status(403).json({ error: 'Unauthorized access' });
+    }
+
+    let oldCollectionName, newCollectionName;
+
+    switch (role) {
+      case 'Host':
+        oldCollectionName = 'Security';
+        newCollectionName = 'Host';
+        break;
+      case 'Security':
+        oldCollectionName = 'Host';
+        newCollectionName = 'Security';
+        break;
+      case 'Admin':
+        return res.status(400).json({ error: 'Cannot change to Admin role' });
+      default:
+        return res.status(400).json({ error: 'Invalid role specified' });
+    }
+
+    const userToUpdate = await client.db("assigment").collection(oldCollectionName).findOne({ identification_No: userId });
+
+    if (userToUpdate) {
+      // Copy user info to new collection
+      await client.db("assigment").collection(newCollectionName).insertOne(userToUpdate);
+
+      // Delete user info from old collection
+      await client.db("assigment").collection(oldCollectionName).deleteOne({ identification_No: userId });
+
+      // Update user role in new collection
+      const updatedUser = await client.db("assigment").collection(newCollectionName).updateOne(
+        { identification_No: userId },
+        { $set: { role: role } }
+      );
+
+      if (updatedUser.matchedCount > 0) {
+        res.status(200).json({
+          message: 'Account role updated successfully',
+          updatedUser
+        });
+      } else {
+        res.status(500).json({ error: 'Failed to update user role' });
+      }
+    } else {
+      res.status(404).json({ error: 'User not found' });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to update account role or unauthorized access' });
+  } finally {
+    await client.close();
+  }
+});
+
 run().catch(console.error);
 
 //To generate token

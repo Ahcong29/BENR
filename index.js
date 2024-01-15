@@ -365,6 +365,56 @@ app.post('/registerHost', verifyToken, async (req, res) => {
 
     /**
  * @swagger
+ * /registerHost:
+ *   post:
+ *     summary: Register a new host without security approval
+ *     description: Register a new host with username, password, name, email, and phoneNumber
+ *     tags:
+ *       - Host
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *                 description: The username of the host
+ *               password:
+ *                 type: string
+ *                 description: The password of the host
+ *               name:
+ *                 type: string
+ *                 description: The name of the host
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 description: The email of the host
+ *               phoneNumber:
+ *                 type: string
+ *                 description: The phone number of the host
+ *             required:
+ *               - username
+ *               - password
+ *               - name
+ *               - email
+ *               - phoneNumber
+ *     responses:
+ *       '200':
+ *         description: Host registered successfully
+ *       '400':
+ *         description: Username already in use, please enter another username
+ */
+app.post('/registerHostNoVerify', async (req, res) => {
+  let data = req.user;
+  let hostData = req.body;
+  res.send(await registerHost(client, data, hostData));
+});
+
+
+    /**
+ * @swagger
  * /loginHost:
  *   post:
  *     summary: Login as host

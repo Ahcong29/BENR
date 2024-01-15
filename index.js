@@ -952,24 +952,24 @@ async function deleteUser(client, data) {
 
 // Function to verify the loginHost token
 async function verifyHostToken(req, res, next) {
-    const token = req.headers.authorization;
+  const token = req.headers.authorization;
 
-    if (!token) {
-        return res.status(401).json({ error: 'Unauthorized - Token is missing' });
-    }
+  if (!token) {
+      return res.status(401).json({ error: 'Unauthorized - Token is missing' });
+  }
 
-    try {
-        const decoded = await verifyTokenAsync(token);
-        req.user = decoded;
+  try {
+      const decoded = await jwt.verify(token, 'faizpass');
+      req.user = decoded;
 
-        if (decoded.role !== 'Host') {
-            return res.status(401).json({ error: 'Unauthorized - User is not a Host' });
-        }
+      if (decoded.role !== 'Host') {
+          return res.status(401).json({ error: 'Unauthorized - User is not a Host' });
+      }
 
-        next();
-    } catch (error) {
-        return res.status(401).json({ error: 'Unauthorized - Invalid token' });
-    }
+      next();
+  } catch (error) {
+      return res.status(401).json({ error: 'Unauthorized - Invalid token' });
+  }
 }
 
 // Function to log in host and provide a token

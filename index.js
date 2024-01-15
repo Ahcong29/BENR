@@ -742,6 +742,7 @@ async function registerHost(client, data, hostData) {
         name: hostData.name,
         email: hostData.email,
         phoneNumber: hostData.phoneNumber,
+        role: "Host"
     });
 
     return "Host registered successfully";
@@ -951,7 +952,7 @@ async function deleteUser(client, data) {
 
 // Function to verify the loginHost token
 async function verifyHostToken(req, res, next) {
-    const token = req.headers['authorization'];
+    const token = req.headers.authorization;
 
     if (!token) {
         return res.status(401).json({ error: 'Unauthorized - Token is missing' });

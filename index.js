@@ -1012,18 +1012,18 @@ async function loginHost(client, data) {
 //         issueTime: new Date(),
 //     };
 
-    await client.db('assigment').collection('Passes').insertOne(passRecord);
+//     await client.db('assigment').collection('Passes').insertOne(passRecord);
 
-    // Create a new record in the "records" collection (you can customize this part)
-    const newRecord = {
-        visitorUsername: passData.visitorUsername,
-        // Add any other fields you want to store in the "records" collection
-    };
+//     // Create a new record in the "records" collection (you can customize this part)
+//     const newRecord = {
+//         visitorUsername: passData.visitorUsername,
+//         // Add any other fields you want to store in the "records" collection
+//     };
 
-    await recordsCollection.insertOne(newRecord);
+//     await recordsCollection.insertOne(newRecord);
 
-    return `Visitor pass issued successfully with pass identifier: ${passIdentifier}`;
-}
+//     return `Visitor pass issued successfully with pass identifier: ${passIdentifier}`;
+// }
 
 // Function to read host data
 async function readHost(client, data) {

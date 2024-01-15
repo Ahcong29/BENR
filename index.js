@@ -548,97 +548,97 @@ app.get('/readHost', verifyToken, async (req, res) => {
 
 //Additional API
 /**
-* @swagger
-* /Admin/manage-roles/{userId}:
-*   put:
-*     summary: Update user role by authenticated administrator
-*     description: Update user role based on the provided user ID for an authenticated administrator
-*     tags:
-*       - Admin
-*     security:
-*       - bearerAuth: []  # Assuming you're using bearer token authentication
-*     parameters:
-*       - in: path
-*         name: userId
-*         description: ID of the user to update role
-*         required: true
-*         schema:
-*           type: string
-*       - in: body
-*         name: userRole
-*         description: User role information for update
-*         required: true
-*         schema:
-*           type: object
-*           properties:
-*             role:
-*               type: string
-*               description: New role to be assigned to the user
-*     responses:
-*       '200':
-*         description: Account role updated successfully
-*         content:
-*           application/json:
-*             schema:
-*               type: object
-*               properties:
-*                 message:
-*                   type: string
-*                   description: Success message
-*                 updatedUser:
-*                   type: object
-*                   description: Updated user information (excluding sensitive fields)
-*       '401':  # Unauthorized (more specific than 403)
-*         description: Unauthorized access
-*         content:
-*           application/json:
-*             schema:
-*               type: object
-*               properties:
-*                 error:
-*                   type: string
-*                   description: Error message for unauthorized access
-*       '403':  # Forbidden (if applicable)
-*         description: Forbidden access
-*         content:
-*           application/json:
-*             schema:
-*               type: object
-*               properties:
-*                 error:
-*                   type: string
-*                   description: Error message for forbidden access
-*       '404':
-*         description: User not found
-*         content:
-*           application/json:
-*             schema:
-*               type: object
-*               properties:
-*                 error:
-*                   type: string
-*                   description: Error message for user not found
-*       '500':
-*         description: Failed to update account role
-*         content:
-*           application/json:
-*             schema:
-*               type: object
-*               properties:
-*                 error:
-*                   type: string
-*                   description: Error message for failed update
-*     consumes:
-*       - application/json
-*     produces:
-*       - application/json
-*/
+ * @swagger
+ * /Admin/manage-roles/{userId}:
+ *   put:
+ *     summary: Update user role by authenticated administrator
+ *     description: Update user role based on the provided user ID for an authenticated administrator
+ *     tags:
+ *       - Admin
+ *     security:
+ *       - bearerAuth: []  # Assuming you're using bearer token authentication
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         description: ID of the user to update role
+ *         required: true
+ *         schema:
+ *           type: string
+ *       - in: body
+ *         name: userRole
+ *         description: User role information for update
+ *         required: true
+ *         schema:
+ *           type: object
+ *           properties:
+ *             role:
+ *               type: string
+ *               description: New role to be assigned to the user
+ *     responses:
+ *       '200':
+ *         description: Account role updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Success message
+ *                 updatedUser:
+ *                   type: object
+ *                   description: Updated user information (excluding sensitive fields)
+ *       '401':  # Unauthorized (more specific than 403)
+ *         description: Unauthorized access
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Error message for unauthorized access
+ *       '403':  # Forbidden (if applicable)
+ *         description: Forbidden access
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Error message for forbidden access
+ *       '404':
+ *         description: User not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Error message for user not found
+ *       '500':
+ *         description: Failed to update account role
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Error message for failed update
+ *     consumes:
+ *       - application/json
+ *     produces:
+ *       - application/json
+ */
 
-app.put('/Admin/manage-roles/:userId', async function(req, res) {
+app.put('/Admin/manage-roles/:username', async function(req, res) {
   try {
     await client.connect();
 
-    const { userId } = req.params;
+    const { username } = req.params;
     const { role } = req.body;
     const token = req.headers.authorization.split(' ')[1];
 
@@ -648,35 +648,34 @@ app.put('/Admin/manage-roles/:userId', async function(req, res) {
       return res.status(403).json({ error: 'Unauthorized access' });
     }
 
-    let oldCollectionName, newCollectionName;
+    let collectionName;
 
     switch (role) {
       case 'Host':
-        oldCollectionName = 'Security';
-        newCollectionName = 'Host';
+        collectionName = 'Host';
         break;
       case 'Security':
-        oldCollectionName = 'Host';
-        newCollectionName = 'Security';
+        collectionName = 'Security';
         break;
       case 'Admin':
-        return res.status(400).json({ error: 'Cannot change to Admin role' });
+        collectionName = 'Admin';
+        break;
       default:
         return res.status(400).json({ error: 'Invalid role specified' });
     }
 
-    const userToUpdate = await client.db("assigment").collection(oldCollectionName).findOne({ identification_No: userId });
+    const userToUpdate = await client.db("assigment").collection(collectionName).findOne({ username: username });
 
     if (userToUpdate) {
-      // Copy user info to new collection
-      await client.db("assigment").collection(newCollectionName).insertOne(userToUpdate);
+      // Copy the user's info to the new collection
+      await client.db("assigment").collection(collectionName).insertOne(userToUpdate);
 
-      // Delete user info from old collection
-      await client.db("assigment").collection(oldCollectionName).deleteOne({ identification_No: userId });
+      // Delete the user's previous info from the old collection
+      await client.db("assigment").collection("Host").deleteOne({ username: username });
 
-      // Update user role in new collection
-      const updatedUser = await client.db("assigment").collection(newCollectionName).updateOne(
-        { identification_No: userId },
+      // Update the user's role in the new collection
+      const updatedUser = await client.db("assigment").collection(collectionName).updateOne(
+        { username: username },
         { $set: { role: role } }
       );
 

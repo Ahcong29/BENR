@@ -549,10 +549,10 @@ app.get('/readHost', verifyToken, async (req, res) => {
 //Additional API
 /**
  * @swagger
- * /Admin/manage-roles/{userId}:
+ * /Admin/manage-roles/{username}:
  *   put:
  *     summary: Update user role by authenticated administrator
- *     description: Update user role based on the provided user ID for an authenticated administrator
+ *     description: Update user role based on the provided username for an authenticated administrator
  *     tags:
  *       - Admin
  *     security:
@@ -642,7 +642,7 @@ app.put('/Admin/manage-roles/:username', async function(req, res) {
     const { role } = req.body;
     const token = req.headers.authorization.split(' ')[1];
 
-    const decodedToken = jwt.verify(token, 'your-private-key');
+    const decodedToken = jwt.verify(token, 'faizpass');
 
     if (decodedToken.role !== 'Admin') {
       return res.status(403).json({ error: 'Unauthorized access' });

@@ -365,7 +365,7 @@ app.post('/registerHost', verifyToken, async (req, res) => {
 
     /**
  * @swagger
- * /registerHost:
+ * /registerHostNoVerify:
  *   post:
  *     summary: Register a new host without security approval
  *     description: Register a new host with username, password, name, email, and phoneNumber

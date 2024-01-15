@@ -952,12 +952,11 @@ async function deleteUser(client, data) {
 
 // Function to verify the loginHost token
 async function verifyHostToken(req, res, next) {
-  const token = req.headers.authorization;
+  const token = req.header('Authorization').split(" ")[1];
 
   if (!token) {
       return res.status(401).json({ error: 'Unauthorized - Token is missing' });
   }
-
   try {
       const decoded = await jwt.verify(token, 'faizpass');
       req.user = decoded;

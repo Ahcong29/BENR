@@ -788,7 +788,8 @@ async function retrievePass(client, data, passIdentifier) {
         visitorUsername: passRecord.visitorUsername,
         passDetails: passRecord.passDetails,
         issuedBy: passRecord.issuedBy,
-        issueTime: passRecord.issueTime
+        issueTime: passRecord.issueTime,
+        hostNumber: passRecord.hostNumber
       };
     }
 }
